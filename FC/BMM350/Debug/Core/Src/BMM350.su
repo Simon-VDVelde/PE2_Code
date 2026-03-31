@@ -1,0 +1,7 @@
+../Core/Src/BMM350.c:26:6:BMM350_Init	16	static
+../Core/Src/BMM350.c:48:6:BMM350_WriteReg	32	static
+../Core/Src/BMM350.c:60:6:BMM350_ReadReg	64	dynamic
+../Core/Src/BMM350.c:74:6:BMM350_GetData	48	static
+../Core/Src/BMM350.c:103:7:BMM350_Angle	24	static
+../Core/Src/BMM350.c:124:6:BMM350_Calibrate	32	static
+../Core/Src/BMM350.c:147:7:BMM350_TiltCompensation	56	static

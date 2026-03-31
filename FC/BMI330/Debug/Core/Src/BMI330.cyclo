@@ -1,0 +1,7 @@
+../Core/Src/BMI330.c:14:6:BMI330_Init	6
+../Core/Src/BMI330.c:70:6:BMI330_WriteReg	1
+../Core/Src/BMI330.c:87:6:BMI330_ReadReg	2
+../Core/Src/BMI330.c:106:7:BMI330_GetTemp	1
+../Core/Src/BMI330.c:117:6:BMI330_ReadFIFO	1
+../Core/Src/BMI330.c:134:6:BMI330_ParseFIFOFrame	1
+../Core/Src/BMI330.c:155:6:BMI330_GetAngles	1

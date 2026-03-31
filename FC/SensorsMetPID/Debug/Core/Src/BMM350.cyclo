@@ -1,0 +1,7 @@
+../Core/Src/BMM350.c:26:6:BMM350_Init	2
+../Core/Src/BMM350.c:46:6:BMM350_WriteReg	1
+../Core/Src/BMM350.c:58:6:BMM350_ReadReg	2
+../Core/Src/BMM350.c:72:6:BMM350_GetData	4
+../Core/Src/BMM350.c:101:7:BMM350_Angle	2
+../Core/Src/BMM350.c:122:6:BMM350_Calibrate	7
+../Core/Src/BMM350.c:145:7:BMM350_TiltCompensation	1

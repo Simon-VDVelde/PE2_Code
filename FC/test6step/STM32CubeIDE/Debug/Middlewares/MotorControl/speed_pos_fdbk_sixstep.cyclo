@@ -1,0 +1,4 @@
+C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c:57:16:SPD_GetAvrgMecSpeedUnit	1
+C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c:93:13:SPD_IsMecSpeedReliable	6
+C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c:189:16:SPD_GetElToMecRatio	1
+C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c:207:13:SPD_SetElToMecRatio	1

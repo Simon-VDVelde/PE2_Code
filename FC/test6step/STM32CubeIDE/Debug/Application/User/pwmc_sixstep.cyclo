@@ -1,0 +1,12 @@
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:58:13:PWMC_Init	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:92:13:PWMC_SetPhaseVoltage	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:116:13:PWMC_LoadNextStep	5
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:183:13:PWMC_TurnOnLowSides	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:219:13:PWMC_SwitchOnPWM	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:259:13:PWMC_SetADCTriggerChannel	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:285:13:PWMC_SwitchOffPWM	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:318:6:PWMC_ForceNextStep	5
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:365:10:PWMC_IsFaultOccurred	4
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:411:9:PWMC_GetLSModConfig	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:432:6:PWMC_SetLSModConfig	1
+C:/Users/simon/.st_workbench/projects/test6step/Src/pwmc_sixstep.c:466:6:PWMC_SetQuasiSynchState	1
