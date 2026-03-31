@@ -1,0 +1,10 @@
+../Core/Src/BMP384.c:23:19:BMP384_Init	16	static
+../Core/Src/BMP384.c:47:6:BMP384_WriteReg	24	static
+../Core/Src/BMP384.c:64:6:BMP384_ReadReg	24	static
+../Core/Src/BMP384.c:83:6:BMP384_ReadCalibration	32	static
+../Core/Src/BMP384.c:111:7:BMP384_ReadData	32	static
+../Core/Src/BMP384.c:133:7:BMP384_Compensate_Pressure	48	static
+../Core/Src/BMP384.c:157:9:BMP384_IsDataReady	16	static
+../Core/Src/BMP384.c:174:7:BMP384_CalculateAltitude	24	static
+../Core/Src/BMP384.c:182:6:BMP384_ground	16	static
+../Core/Src/BMP384.c:195:7:BMP384_GetTemp	4	static
