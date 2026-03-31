@@ -1,0 +1,15 @@
+# STM32 CubeIDE / TrueSTUDIO / SW4STM32
+Debug/
+Release/
+*.elf
+*.bin
+*.map
+*.o
+*.su
+*.d
+.settings/
+.p6project
+
+# OS specifieke bestanden
+.DS_Store
+Thumbs.db
