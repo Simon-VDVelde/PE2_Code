@@ -17,26 +17,37 @@ void BMI330_Init(void){
 	uint16_t status;
 	uint16_t feature;
 	uint16_t feature_status = 0;
+	uint8_t timeout = 10;
+	BMI330_ReadReg(BMI330_CHIP_ID, &id, 1);
+	HAL_Delay(5);
+
 	// De volgende 3 regs en de while loop is een soort protocol om de feature engine op te starten
 	BMI330_WriteReg(BMI330_FEATURE_IO2, 0x012C);
 	BMI330_WriteReg(BMI330_FEATURE_IO_STATUS, 0x01);
 	BMI330_WriteReg(BMI330_FEATURE_CTRL, 0x01);
 
 	do {
-	    BMI330_ReadReg(BMI330_FEATURE_IO1, &feature_status, 2);
-	    HAL_Delay(1000);
+	    BMI330_ReadReg(BMI330_FEATURE_IO1, &feature_status, 1);
+	    HAL_Delay(10);
+	    timeout--;
 	    printf("Fout bij initialisatie BMI330\n");
-	} while (feature_status != 0x0001);
+	} while (feature_status != 0x0001 && timeout > 0);
 
-	BMI330_ReadReg(BMI330_CHIP_ID, &id, 2);
-	BMI330_ReadReg(BMI330_ERR_REG, &error, 2);
-	BMI330_ReadReg(BMI330_STATUS, &status, 2);
-	BMI330_ReadReg(BMI330_FEATURE_IO1, &feature, 2);
+	BMI330_ReadReg(BMI330_CHIP_ID, &id, 1);
+	BMI330_ReadReg(BMI330_ERR_REG, &error, 1);
+	BMI330_ReadReg(BMI330_STATUS, &status, 1);
+	BMI330_ReadReg(BMI330_FEATURE_IO1, &feature, 1);
 	while(id != BMI330_ID || error != 0x00 || status != 0x01 || feature != 0x05){
+		BMI330_ReadReg(BMI330_CHIP_ID, &id, 1);
+
 		printf("Fout bij initialisatie BMI330\n");
-		printf("ID: %d\n", id);
+		printf("ID: 0x%04X\n", id);
+		printf("Error: 0x%04X\n", error);
+				printf("Status: 0x%04X\n", status);
+				printf("Feature: 0x%04X\n", feature);
 		HAL_Delay(1000);
 	};  // Als hier fout is kijk bij power up status en feature reg andere waardes?
+	printf("Initialisatie succesvol\n");
 
 	// In de volgende 4 registers gaan we waardes schrijven naar de extended memory map
 	BMI330_WriteReg(BMI330_FEATURE_DATA_ADDR, BMI330_ANYMO_1);
@@ -89,7 +100,7 @@ void BMI330_ReadReg(uint8_t reg, uint16_t *pData, uint8_t len) {
 	//hierna 1 dummy byte en daarna data.
 	//Bij meerdere blokken data => adres auto increment
     uint8_t address = reg | 0x80;
-    uint8_t dummy;
+    uint8_t dummy = 0;
     uint8_t buffer[len * 2];
     HAL_GPIO_WritePin(BMI_CS_GPIO_Port, BMI_CS_Pin, GPIO_PIN_RESET);
     HAL_SPI_Transmit(&hspi1, &address, 1, 100);

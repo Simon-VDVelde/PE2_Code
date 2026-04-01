@@ -5,12 +5,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/bus_voltage_sensor.c \
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/ntc_temperature_sensor.c \
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/pid_regulator.c \
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/r_divider_bus_voltage_sensor.c \
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c \
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c 
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/bus_voltage_sensor.c \
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/ntc_temperature_sensor.c \
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/pid_regulator.c \
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/r_divider_bus_voltage_sensor.c \
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c \
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c 
 
 OBJS += \
 ./Middlewares/MotorControl/bus_voltage_sensor.o \
@@ -30,17 +30,17 @@ C_DEPS += \
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Middlewares/MotorControl/bus_voltage_sensor.o: C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/bus_voltage_sensor.c Middlewares/MotorControl/subdir.mk
+Middlewares/MotorControl/bus_voltage_sensor.o: C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/bus_voltage_sensor.c Middlewares/MotorControl/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DARM_MATH_CM0PLUS -DUSE_HAL_DRIVER -DSTM32G031xx -c -I../../Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc -I../../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../../Drivers/CMSIS/Include -I../../Drivers/CMSIS/DSP/Include -Ofast -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
-Middlewares/MotorControl/ntc_temperature_sensor.o: C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/ntc_temperature_sensor.c Middlewares/MotorControl/subdir.mk
+Middlewares/MotorControl/ntc_temperature_sensor.o: C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/ntc_temperature_sensor.c Middlewares/MotorControl/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DARM_MATH_CM0PLUS -DUSE_HAL_DRIVER -DSTM32G031xx -c -I../../Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc -I../../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../../Drivers/CMSIS/Include -I../../Drivers/CMSIS/DSP/Include -Ofast -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
-Middlewares/MotorControl/pid_regulator.o: C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/pid_regulator.c Middlewares/MotorControl/subdir.mk
+Middlewares/MotorControl/pid_regulator.o: C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/pid_regulator.c Middlewares/MotorControl/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DARM_MATH_CM0PLUS -DUSE_HAL_DRIVER -DSTM32G031xx -c -I../../Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc -I../../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../../Drivers/CMSIS/Include -I../../Drivers/CMSIS/DSP/Include -Ofast -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
-Middlewares/MotorControl/r_divider_bus_voltage_sensor.o: C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/r_divider_bus_voltage_sensor.c Middlewares/MotorControl/subdir.mk
+Middlewares/MotorControl/r_divider_bus_voltage_sensor.o: C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/r_divider_bus_voltage_sensor.c Middlewares/MotorControl/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DARM_MATH_CM0PLUS -DUSE_HAL_DRIVER -DSTM32G031xx -c -I../../Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc -I../../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../../Drivers/CMSIS/Include -I../../Drivers/CMSIS/DSP/Include -Ofast -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
-Middlewares/MotorControl/revup_ctrl_sixstep.o: C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c Middlewares/MotorControl/subdir.mk
+Middlewares/MotorControl/revup_ctrl_sixstep.o: C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c Middlewares/MotorControl/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DARM_MATH_CM0PLUS -DUSE_HAL_DRIVER -DSTM32G031xx -c -I../../Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc -I../../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../../Drivers/CMSIS/Include -I../../Drivers/CMSIS/DSP/Include -Ofast -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
-Middlewares/MotorControl/speed_pos_fdbk_sixstep.o: C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c Middlewares/MotorControl/subdir.mk
+Middlewares/MotorControl/speed_pos_fdbk_sixstep.o: C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/speed_pos_fdbk_sixstep.c Middlewares/MotorControl/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DARM_MATH_CM0PLUS -DUSE_HAL_DRIVER -DSTM32G031xx -c -I../../Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc -I../../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc -I../../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../../Drivers/CMSIS/Include -I../../Drivers/CMSIS/DSP/Include -Ofast -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 
 clean: clean-Middlewares-2f-MotorControl

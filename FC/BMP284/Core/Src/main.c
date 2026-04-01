@@ -106,7 +106,7 @@ static void MX_UART8_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-int g_new_pressure_data = 0;
+volatile int g_new_pressure_data = 0;
 
 int _write(int file, char *ptr, int len) {
 	for(int i = 0; i < len; i++){
@@ -152,7 +152,6 @@ int main(void)
   PID_HandleInit(struct_PidRatePitch);
   PID_HandleInit(struct_PidRateYaw);
   */
-  BMP384_Init(&calibData);
   //BMI330_Init();
   /* USER CODE END Init */
 
@@ -177,6 +176,7 @@ int main(void)
   MX_FATFS_Init();
   MX_UART8_Init();
   /* USER CODE BEGIN 2 */
+  BMP384_Init(&calibData);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -184,12 +184,15 @@ int main(void)
   while (1)
   {
 	  if(g_new_pressure_data == 1){
+		  printf("Nieuwe INT data:\n");
 		  float pressure_pa = BMP384_ReadData(&calibData); // in pascal
 		  float hoogte = BMP384_CalculateAltitude(pressure_pa);
 		  float temp = BMP384_GetTemp(&calibData);
 		  printf("BMP284:\r\n De druk(pa) = %f\nDe hoogte(m) = %f, De temp = %f\n", pressure_pa, hoogte, temp);
 		  g_new_pressure_data = 0;
+		  HAL_Delay(1000);
 	  }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

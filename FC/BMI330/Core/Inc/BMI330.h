@@ -12,7 +12,7 @@
 #include "stm32f7xx_hal.h"
 #include "stdio.h"
 
-#define BMI330_ID					0x48
+#define BMI330_ID					0x0048
 
 // NORMAL MEMORY MAP
 

@@ -1,5 +1,5 @@
 Application/User/mc_config_common.o: \
- C:/Users/simon/.st_workbench/projects/test6step/Src/mc_config_common.c \
+ C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/mc_config_common.c \
  ../../Inc/main.h ../../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h \
  ../../Inc/stm32g0xx_hal_conf.h \
  ../../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_rcc.h \

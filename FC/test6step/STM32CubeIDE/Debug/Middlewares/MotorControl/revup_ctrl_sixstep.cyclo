@@ -1,5 +1,5 @@
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:80:13:RUC_6S_Clear	6
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:137:13:RUC_6S_UpdatePulse	1
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:160:13:RUC_6S_Exec	9
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:273:6:RUC_6S_IsAlignStageNow	1
-C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:312:13:RUC_6S_ObserverSpeedReached	1
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:80:13:RUC_6S_Clear	6
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:137:13:RUC_6S_UpdatePulse	1
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:160:13:RUC_6S_Exec	9
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:273:6:RUC_6S_IsAlignStageNow	1
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/revup_ctrl_sixstep.c:312:13:RUC_6S_ObserverSpeedReached	1

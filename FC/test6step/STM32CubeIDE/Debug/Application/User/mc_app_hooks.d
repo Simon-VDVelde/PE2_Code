@@ -1,5 +1,5 @@
 Application/User/mc_app_hooks.o: \
- C:/Users/simon/.st_workbench/projects/test6step/Src/mc_app_hooks.c \
+ C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/mc_app_hooks.c \
  ../../Inc/mc_type.h ../../Inc/mc_stm_types.h \
  ../../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h \
  ../../Drivers/CMSIS/Device/ST/STM32G0xx/Include/stm32g0xx.h \

@@ -64,8 +64,8 @@ all: main-build
 main-build: BMP284.elf secondary-outputs
 
 # Tool invocations
-BMP284.elf BMP284.map: $(OBJS) $(USER_OBJS) C:\Users\simon\STM32CubeIDE\Eindeproject\BMP284\STM32F745VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BMP284.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\simon\STM32CubeIDE\Eindeproject\BMP284\STM32F745VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BMP284.map" -Wl,--gc-sections -static  -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+BMP284.elf BMP284.map: $(OBJS) $(USER_OBJS) C:\Users\simon\Documents\GitHub\PE2_Code\FC\BMP284\STM32F745VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "BMP284.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\simon\Documents\GitHub\PE2_Code\FC\BMP284\STM32F745VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BMP284.map" -Wl,--gc-sections -static  -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -107,8 +107,8 @@ float alpha = 0.98; // hoe hoger hoe meer de acc gaat doortellen
 float dt = 0.02;   // voor 50hz
 float gefilterde_hoogte = 0;
 float verticale_snelheid = 0;
-int g_new_bmm_data = 0;
-int g_new_bmi_data = 0;
+volatile int g_new_bmm_data = 0;
+volatile int g_new_bmi_data = 0;
 
 int _write(int file, char *ptr, int len) {
 	for(int i = 0; i < len; i++){

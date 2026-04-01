@@ -1,4 +1,4 @@
-C:/Users/simon/.st_workbench/projects/test6step/Src/speed_duty_ctrl.c:49:13:SDC_Clear	8	static
-C:/Users/simon/.st_workbench/projects/test6step/Src/speed_duty_ctrl.c:91:13:SDC_ExecRamp	16	static
-C:/Users/simon/.st_workbench/projects/test6step/Src/speed_duty_ctrl.c:204:17:SDC_CalcSpeedReference	16	static
-C:/Users/simon/.st_workbench/projects/test6step/Src/speed_duty_ctrl.c:297:13:SDC_StopSpeedRamp	0	static
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/speed_duty_ctrl.c:49:13:SDC_Clear	8	static
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/speed_duty_ctrl.c:91:13:SDC_ExecRamp	16	static
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/speed_duty_ctrl.c:204:17:SDC_CalcSpeedReference	16	static
+C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/speed_duty_ctrl.c:297:13:SDC_StopSpeedRamp	0	static

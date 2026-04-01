@@ -1,5 +1,5 @@
 Middlewares/MotorControl/pid_regulator.o: \
- C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/pid_regulator.c \
+ C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/pid_regulator.c \
  ../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc/pid_regulator.h \
  ../../Inc/mc_type.h ../../Inc/mc_stm_types.h \
  ../../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h \

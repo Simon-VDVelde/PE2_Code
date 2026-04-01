@@ -81,13 +81,14 @@ HAL_StatusTypeDef BMP384_Init(BMP384_Calib *calibData){
 	uint8_t id;
 	BMP384_ReadReg(BMP384_CHIP_ID, &id, 1);
 	if(id != BMP384_ID	){
-		printf("ID komt niet overeen\nID is %d\n", id);
+		printf("ID komt niet overeen\nID is %d\n\r", id);
 		HAL_Delay(3000);
 		return HAL_ERROR;
 	}else{
-		printf("succesvol geconnect met id %d\n", id);
+		printf("succesvol geconnect met id %d\n\r", id);
 		HAL_Delay(3000);
 	}
+	printf("ID check gedaan\n");
 	BMP384_WriteReg(BMP384_CMD, BMP384_CMD_SOFTRESET);
 	HAL_Delay(10);
 	BMP384_ReadCalibration(calibData);
@@ -95,7 +96,7 @@ HAL_StatusTypeDef BMP384_Init(BMP384_Calib *calibData){
 	BMP384_WriteReg(BMP384_OSR, 3);							// Oversampling Pressure, zet op x8 voor hoge resolutie
 	BMP384_WriteReg(BMP384_CONFIG, 4);						// Zet de iir filter cooficient op 3
 	BMP384_WriteReg(BMP384_ODR, 2);
-	BMP384_WriteReg(BMP384_INT_CTRL	, 0x46);				// we stellen in hoe de INT pin moet werken en dat het een INT stuurd wnr de data klaar is
+	BMP384_WriteReg(BMP384_INT_CTRL	, 0x42);				// we stellen in hoe de INT pin moet werken en dat het een INT stuurd wnr de data klaar is
 	BMP384_ground(calibData);										// bereken de druk op de grond.
 
 	return HAL_OK;

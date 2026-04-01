@@ -1,5 +1,5 @@
 Application/User/mcp_config.o: \
- C:/Users/simon/.st_workbench/projects/test6step/Src/mcp_config.c \
+ C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/mcp_config.c \
  ../../Inc/parameters_conversion.h ../../Inc/mc_math.h \
  ../../Inc/mc_type.h ../../Inc/mc_stm_types.h \
  ../../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h \

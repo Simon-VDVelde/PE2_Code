@@ -1,5 +1,5 @@
 Application/User/bemf_ADC_fdbk_sixstep.o: \
- C:/Users/simon/.st_workbench/projects/test6step/Src/bemf_ADC_fdbk_sixstep.c \
+ C:/Users/simon/Documents/GitHub/PE2_Code/FC/test6step/Src/bemf_ADC_fdbk_sixstep.c \
  ../../Inc/bemf_ADC_fdbk_sixstep.h \
  ../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc/speed_pos_fdbk_sixstep.h \
  ../../Inc/mc_type.h ../../Inc/mc_stm_types.h \
