@@ -727,9 +727,13 @@ void Update_Motors(uint16_t throttle, int16_t roll, int16_t pitch, int16_t yaw) 
     int16_t m3 = throttle - pitch + roll + yaw; // Linksachter
     int16_t m4 = throttle - pitch - roll - yaw; // Rechtsachter
 }
-
+*/
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+	/*
+	if (GPIO_Pin == SX1280_DIO1_Pin) {
+        ELRS_HandleRxInterrupt();
+    }
     if (GPIO_Pin == GPIO_PIN_4)
     {
     	BMI330_Frame current_data;
@@ -754,8 +758,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
 
     }
+    */
 }
-*/
+
 /* USER CODE END 4 */
 
  /* MPU Configuration */
