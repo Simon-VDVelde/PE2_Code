@@ -23,8 +23,8 @@ void BMI330_Init(void){
 
 	// De volgende 3 regs en de while loop is een soort protocol om de feature engine op te starten
 	BMI330_WriteReg(BMI330_FEATURE_IO2, 0x012C);
-	BMI330_WriteReg(BMI330_FEATURE_IO_STATUS, 0x01);
-	BMI330_WriteReg(BMI330_FEATURE_CTRL, 0x01);
+	BMI330_WriteReg(BMI330_FEATURE_IO_STATUS, 0x0001);
+	BMI330_WriteReg(BMI330_FEATURE_CTRL, 0x0001);
 
 	do {
 	    BMI330_ReadReg(BMI330_FEATURE_IO1, &feature_status, 1);
@@ -37,7 +37,7 @@ void BMI330_Init(void){
 	BMI330_ReadReg(BMI330_ERR_REG, &error, 1);
 	BMI330_ReadReg(BMI330_STATUS, &status, 1);
 	BMI330_ReadReg(BMI330_FEATURE_IO1, &feature, 1);
-	while(id != BMI330_ID || error != 0x00 || status != 0x01 || feature != 0x05){
+	while(id != BMI330_ID || error != 0x0000 || status != 0x0001 || feature != 0x0005){
 		BMI330_ReadReg(BMI330_CHIP_ID, &id, 1);
 
 		printf("Fout bij initialisatie BMI330\n");
@@ -45,7 +45,7 @@ void BMI330_Init(void){
 		printf("Error: 0x%04X\n", error);
 				printf("Status: 0x%04X\n", status);
 				printf("Feature: 0x%04X\n", feature);
-		HAL_Delay(1000);
+		HAL_Delay(1);
 	};  // Als hier fout is kijk bij power up status en feature reg andere waardes?
 	printf("Initialisatie succesvol\n");
 
@@ -82,7 +82,7 @@ void BMI330_WriteReg(uint8_t reg, uint16_t val){
 	//MSB van Data is om te zeggen voor Read of Write(1 = Read, 0 = Write)
 	//write commando = 16 bits = (R/W + Address + Data(16bit) = 1 + 7 + 8 + 8)
 	//einde van sturen = CS hoog
-	uint8_t data[3] = {reg & 0x7F, val & 0xFF, val >> 8 & 0xFF};
+	uint8_t data[3] = {reg & 0x7F, val & 0xFF, (val >> 8) & 0xFF};
 	HAL_GPIO_WritePin(BMI_CS_GPIO_Port, BMI_CS_Pin, GPIO_PIN_RESET);
 	HAL_SPI_Transmit(&hspi1, data, 3, 100);
 	HAL_GPIO_WritePin(BMI_CS_GPIO_Port, BMI_CS_Pin, GPIO_PIN_SET);

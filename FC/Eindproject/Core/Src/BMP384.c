@@ -179,7 +179,7 @@ float BMP384_CalculateAltitude(float pressure_pa){
  */
 void BMP384_ground(void) {
     for (int i = 0; i < 50; i++) {
-        while(BMP384_IsDatadReady() == 0);
+        while(BMP384_IsDataReady() == 0);
         g_ground_pa += BMP384_ReadData();
     }
     g_ground_pa /= 50.0f;
@@ -189,6 +189,6 @@ void BMP384_ground(void) {
  * @brief deze functie geeft de temperatuur terug
  * @note deze functie vereist dat BMP384_ReadData() al minstens 1x is opgeroepen
  */
-float BMP384_ground(void) {
+float BMP384_GetTemp(void) {
     return calibData.t_lin;
 }

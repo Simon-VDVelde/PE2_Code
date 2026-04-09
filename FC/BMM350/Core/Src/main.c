@@ -23,9 +23,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
-//#include "BMP384.h"
-#include "BMM350.h"
-#include "BMI330.h"
+#include "bmm350zelf.h"
+//#include "BMM350.h"
+//#include "BMI330.h"
 //#include "pid_regulator.h"
 /* USER CODE END Includes */
 
@@ -65,14 +65,28 @@ UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart8;
 
 /* USER CODE BEGIN PV */
+//BMP384_Calib calibData;
+
+
 /*
 PID_Handle_t struct_PidRateRoll;
 PID_Handle_t struct_PidRatePitch;
 PID_Handle_t struct_PidRateYaw;
-*/
-BMI330_Frame current_data;
 BMM350_MagData BMM350_Data;
+BMI330_Frame current_data;
+*/
 
+float g_hoogte;
+float g_druk;
+float g_hoek;
+int g_acc;
+int g_gyr;
+float alpha = 0.98; // hoe hoger hoe meer de acc gaat doortellen
+float dt = 0.02;   // voor 50hz
+float gefilterde_hoogte = 0;
+float verticale_snelheid = 0;
+uint8_t returnwaarde = 0;
+BMM350_MagData data;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,7 +94,6 @@ void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
-static void MX_I2C1_Init(void);
 static void MX_SDMMC1_SD_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
@@ -89,26 +102,15 @@ static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_UART7_Init(void);
 static void MX_UART8_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-float g_hoogte;
-float g_druk;
-float g_hoek;
-float g_pitch;
-float g_roll;
-float g_temp;
-int g_acc;
-int g_gyr;
-float alpha = 0.98; // hoe hoger hoe meer de acc gaat doortellen
-float dt = 0.02;   // voor 50hz
-float gefilterde_hoogte = 0;
-float verticale_snelheid = 0;
-volatile int g_new_bmm_data = 0;
-volatile int g_new_bmi_data = 0;
+
+volatile int g_new_magn_data = 0;
 
 int _write(int file, char *ptr, int len) {
 	for(int i = 0; i < len; i++){
@@ -149,13 +151,12 @@ int main(void)
 
   /* USER CODE BEGIN Init */
  /* Init_RateLoops();
-  BMP384_Init();
+
   PID_HandleInit(struct_PidRateRoll);
   PID_HandleInit(struct_PidRatePitch);
   PID_HandleInit(struct_PidRateYaw);
   */
-  BMM350_Init();
-  BMI330_Init();
+  //BMI330_Init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -168,7 +169,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_I2C1_Init();
   MX_SDMMC1_SD_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
@@ -178,55 +178,33 @@ int main(void)
   MX_UART7_Init();
   MX_FATFS_Init();
   MX_UART8_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+
+  returnwaarde = BMM350_Init();
+  while(returnwaarde == -1){
+	  returnwaarde = BMM350_Init();
+	  printf("Init niet succesvol\n");
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  uint8_t id;
-	  BMM350_ReadReg(BMM350_CHIP_ID, &id, 1);
-	  for(int i = 0; i < 128; i++){
-		  if(id == i){
-			  printf("Het addres van de BMM350 is %d\n", i);
-			  HAL_Delay(3000);
-		  }
+	  BMM350_ReadReg(BMM350_CHIP_ID, &chip_id, 1);
+	  printf("Chip ID is %d != %d\n", chip_id, BMM350_EXPRECTED_ID);
+
+	  BMM350_GetData(&data, 0, 0);
+	  printf("BMM Data:\nX: %ld, Y: %ld, Z: %ld\n\n", data.x, data.y, data.z);
+	  HAL_Delay(500);
+	  if(g_new_magn_data == 1){
+		  printf("\n\nNieuwe INT data: ");
+		  BMM350_GetData(&data, 0, 0);
+		  printf("BMM Data:\nX: %ld, Y: %ld, Z: %ld\n\n\n", data.x, data.y, data.z);
+		  g_new_magn_data = 0;
 	  }
-	  if(g_new_bmm_data == 1){
-		  float roll, pitch;
-			BMI330_GetAngles(&current_data, &roll, &pitch);
-			BMM350_GetData(&BMM350_Data, roll, pitch);
-			float hoek = BMM350_Data.richting;
-
-			printf("BMM350 Data: \n");
-			printf("BMM350 Raw Data: x = %ld, Y = %ld, Z = %ld \n\n", BMM350_Data.x, BMM350_Data.y, BMM350_Data.z);
-
-			// enkel de laatste offset meting is belangerijk want dan heb je de uiterste bereikt
-			printf("BMM350 offsets Data: x = %f, Y = %f, Z = %f \n\n\n\n", BMM350_Data.x_offset, BMM350_Data.y_offset, BMM350_Data.z_offset);
-
-			g_hoek = hoek;
-			g_new_bmm_data = 0;
-	  }
-	  if(g_new_bmi_data == 1){
-		  uint8_t data[15];
-			uint16_t len = 15;
-			float roll = 0;
-			  float pitch = 0;
-			BMI330_ReadFIFO(data, len);
-			BMI330_ParseFIFOFrame(&data, &current_data);
-			BMI330_GetAngles(&current_data, &roll, &pitch);
-
-			printf("Data van de BMI INT1 pin: \n");
-			printf("Gyro data: X = %f, Y = %f, Z = %f \n", current_data.gyr_x, current_data.gyr_y, current_data.gyr_z);
-			printf("acc  data: X = %f, Y = %f, Z = %f \n", current_data.acc_x, current_data.acc_y, current_data.acc_z);
-			printf("temp: %f \n\n\n\n", current_data.sensor_temp);
-			g_temp = current_data.sensor_temp;
-			g_roll = roll;
-			g_pitch = pitch;
-		  g_new_bmi_data = 0;
-	  }
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -257,17 +235,10 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 50;
+  RCC_OscInitStruct.PLL.PLLN = 100;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Activate the Over-Drive mode
-  */
-  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     Error_Handler();
   }
@@ -278,10 +249,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV16;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV16;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
   {
     Error_Handler();
   }
@@ -303,7 +274,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x00401959;
+  hi2c1.Init.Timing = 0x00101622;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -806,10 +777,23 @@ void Update_Motors(uint16_t throttle, int16_t roll, int16_t pitch, int16_t yaw) 
 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-
+/*
     if (GPIO_Pin == GPIO_PIN_4)	//INT1 van BMI
     {
-    	g_new_bmi_data = 1;
+    	float data[15];
+    	int len = 15;
+    	float roll, pitch;
+    	BMI330_ReadFIFO(data, len);
+    	BMI330_ParseFIFOFrame(&data, &current_data);
+    	BMI330_GetAngles(current_data, roll, pitch);
+
+    	printf("Data van de BMI INT1 pin: \n");
+    	printf("Gyro data: X = %f, Y = %f, Z = %f \n", current_data->gyr_x, current_data->gyr_y, current_data->gyr_z);
+    	printf("acc  data: X = %f, Y = %f, Z = %f \n", current_data->acc_x, current_data->acc_y, current_data->acc_z);
+    	printf("temp: %f \n\n\n\n", current_data->sensor_temp);
+    	g_temp = current_data->sensor_temp;
+    	g_roll = roll;
+    	g_pitch = pitch;
     	return;
     }
 
@@ -819,10 +803,22 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
     if (GPIO_Pin == GPIO_PIN_7)	//INT van BMM350
     {
-    	g_new_bmm_data = 1;
+    	float roll, pitch;
+    	BMI330_GetAngles(current_data, &roll, &pitch);
+    	BMM350_GetData(&BMM350_Data, roll, pitch);
+    	float hoek = BMM350_Data.richting;
+
+    	// calibrate is iets wat we eenmalig moeten doen, hieruit halen we de vaste ofset waardes die we daarna kunnen gebruiken
+    	BMM350_Calibrate(BMM350_Data.x, BMM350_Data.y, BMM350_Data.z, BMM350_Data.x_offset, BMM350_Data.y_offset, BMM350_Data.z_offset);
+    	printf("BMM350 Data: \n");
+    	printf("BMM350 Raw Data: x = %d, Y = %d, Z = %d \n\n", BMM350_Data.x, BMM350_Data.y, BMM350_Data.z);
+
+    	// enkel de laatste offset meting is belangerijk want dan heb je de uiterste bereikt
+    	printf("BMM350 offsets Data: x = %d, Y = %d, Z = %d \n\n\n\n", BMM350_Data.x_offset, BMM350_Data.y_offset, BMM350_Data.z_offset);
+
+    	g_hoek = hoek;
     	return;
     }
-    /*
     if (GPIO_Pin == GPIO_PIN_13) //INT van BMP
     {
     	float druk = BMP384_ReadData();
@@ -834,7 +830,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     	g_hoogte = hoogte;
     	return;
     }
-    */
+*/
+	if (GPIO_Pin == GPIO_PIN_13)	//INT van BMP
+    	{
+			g_new_magn_data = 1;
+    		return;
+    	}
 }
 /* USER CODE END 4 */
 

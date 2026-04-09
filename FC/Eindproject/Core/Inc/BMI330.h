@@ -9,6 +9,7 @@
 #define INC_BMI330_H_
 
 #include "stm32f7xx_hal.h"
+#include <stdio.h>
 
 #define BMI330_ID					0x48
 
@@ -138,8 +139,12 @@
 typedef struct {
     int16_t acc_x, acc_y, acc_z;
     int16_t gyr_x, gyr_y, gyr_z;
+    float gyr_x_dps, gyr_y_dps, gyr_z_dps; // dps = degrees per second
     uint16_t sensor_temp; // 24-bit
     uint8_t offset;
 } BMI330_Frame;
+
+
+void BMI330_Init(void);
 
 #endif

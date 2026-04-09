@@ -141,10 +141,6 @@ void Error_Handler(void);
 #define BMM_INT_Pin GPIO_PIN_7
 #define BMM_INT_GPIO_Port GPIOB
 #define BMM_INT_EXTI_IRQn EXTI9_5_IRQn
-#define BMM_SCL_Pin GPIO_PIN_8
-#define BMM_SCL_GPIO_Port GPIOB
-#define BMM_SDA_Pin GPIO_PIN_9
-#define BMM_SDA_GPIO_Port GPIOB
 #define STLink_TX_Pin GPIO_PIN_0
 #define STLink_TX_GPIO_Port GPIOE
 #define STLink_RX_Pin GPIO_PIN_1

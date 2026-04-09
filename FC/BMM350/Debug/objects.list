@@ -1,5 +1,6 @@
-"./Core/Src/BMI330.o"
-"./Core/Src/BMM350.o"
+"./Core/Src/BMM350zelf.o"
+"./Core/Src/bmm350.o"
+"./Core/Src/bmm350_oor.o"
 "./Core/Src/main.o"
 "./Core/Src/stm32f7xx_hal_msp.o"
 "./Core/Src/stm32f7xx_it.o"

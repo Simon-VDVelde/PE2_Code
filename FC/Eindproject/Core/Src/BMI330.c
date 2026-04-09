@@ -6,8 +6,12 @@
  */
 
 #include "BMI330.h"
+#include "main.h"
 
+extern SPI_HandleTypeDef hspi1;
 BMI330_Frame frame;
+static void BMI330_WriteReg(uint8_t reg, uint16_t val);
+static void BMI330_ReadReg(uint8_t reg, uint16_t *pData, uint8_t len);
 
 void BMI330_Init(void){
 	uint16_t id;
@@ -43,7 +47,7 @@ void BMI330_Init(void){
 	BMI330_WriteReg(BMI330_FEATURE_DATA_ADDR, BMI330_ANYMO_1);
 	BMI330_WriteReg(BMI330_FEATURE_DATA_TX, 0x66);	// Waarde = G-drempel * 512			66 is maar een testwaarde voor 0.2g verander indien nodig
 	BMI330_WriteReg(BMI330_FEATURE_DATA_ADDR, BMI330_ANYMO_3);
-	BMI330_WriteReg(BMI330_FEATURE_DATA_ADDR, 0x6030);		// 60 is de default wait time en 30 is het aantal samples dat het boven de drempel moet zijn, verander indien nodig
+	BMI330_WriteReg(BMI330_FEATURE_DATA_TX, 0x6030);		// 60 is de default wait time en 30 is het aantal samples dat het boven de drempel moet zijn, verander indien nodig
 	BMI330_WriteReg(BMI330_FEATURE_IO0, 0x38);				// Stel in feature anymotion in voor de x,y en z
 	BMI330_WriteReg(BMI330_FEATURE_IO_STATUS, 0x01);		// We doen dit om de veranderingen in IO0 door te voeren
 
@@ -100,7 +104,7 @@ static void BMI330_ReadReg(uint8_t reg, uint16_t *pData, uint8_t len){
 
 
 float BMI330_GetTemp(){
-	int16_t temperature;
+	uint16_t temperature;
 	BMI330_ReadReg(BMI330_TEMP_DATA, &temperature, 2);
 	return (float)temperature / 256.0 + 23.0;
 }
@@ -111,7 +115,7 @@ float BMI330_GetTemp(){
  * @param len Aantal bytes om te lezen (voor jouw setup is dit 15)
  */
 void BMI330_ReadFIFO(uint8_t *pData, uint16_t len) {
-    uint8_t address = BMI330_FIFO_DATA;
+    uint8_t address = BMI330_FIFO_DATA | 0x80;
     uint8_t dummy;
 
     HAL_GPIO_WritePin(BMI_CS_GPIO_Port, BMI_CS_Pin, GPIO_PIN_RESET);
@@ -136,6 +140,11 @@ void BMI330_ParseFIFOFrame(uint8_t *raw_data, BMI330_Frame *frame) {
     frame->gyr_x = (int16_t)((raw_data[7] << 8) | raw_data[6]);
     frame->gyr_y = (int16_t)((raw_data[9] << 8) | raw_data[8]);
     frame->gyr_z = (int16_t)((raw_data[11] << 8) | raw_data[10]);
+
+    // zet data om naar dps(degrees per second)
+    frame->gyr_x_dps = (float)frame->gyr_x / 16.4;
+    frame->gyr_y_dps = (float)frame->gyr_y / 16.4;
+    frame->gyr_z_dps = (float)frame->gyr_z / 16.4;
 
     // Sensortime (Byte 12 t/m 14)
     frame->sensor_temp = (uint16_t)((raw_data[13] << 8) | raw_data[12]);
