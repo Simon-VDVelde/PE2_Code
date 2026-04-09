@@ -727,6 +727,10 @@ void Update_Motors(uint16_t throttle, int16_t roll, int16_t pitch, int16_t yaw) 
     int16_t m2 = throttle + pitch - roll + yaw; // Rechtsvoor
     int16_t m3 = throttle - pitch + roll + yaw; // Linksachter
     int16_t m4 = throttle - pitch - roll - yaw; // Rechtsachter
+    motor_links_voor   = throttle - pid_roll.output - pid_pitch.output - pid_yaw.output;
+	motor_rechts_voor  = throttle + pid_roll.output - pid_pitch.output + pid_yaw.output;
+	motor_rechts_achter = throttle + pid_roll.output + pid_pitch.output - pid_yaw.output;
+	motor_links_achter  = throttle - pid_roll.output + pid_pitch.output + pid_yaw.output;
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
