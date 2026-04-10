@@ -76,6 +76,8 @@ void SX1280_SetPacketType(uint8_t packetType);
 void SX1280_SetModulationParams(uint8_t sf, uint8_t bw, uint8_t cr);
 void SX1280_SetPacketParams(uint8_t preambleLen, uint8_t headerType, uint8_t payloadLen, uint8_t crc, uint8_t invertIQ);
 void SX1280_SetDioIrqParams(uint16_t irqMask, uint16_t dio1Mask, uint16_t dio2Mask, uint16_t dio3Mask);
+void ELRS_HandleRxInterrupt(void);
 void SX1280_SetRx(void);
+void ELRS_ParsePayload(void);
 
 #endif /* INC_SX1280_H_ */

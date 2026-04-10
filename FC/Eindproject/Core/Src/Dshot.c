@@ -42,51 +42,51 @@ uint32_t motor_dmabuf[4][17];
 /* buffer vullen */
 void update_motor_buffer(uint8_t motor_id, uint16_t throttle, uint8_t telemetry)
 {
-uint16_t telemetry_bit;
-uint16_t gastelemetry;
-uint16_t dshotpakket;
-//0-48 geeen gas
-if (throttle > 0 && throttle < 48)
-{
-throttle = 48;
-}
-//2047 is volle gas
-if (throttle > 2047)
-{
-throttle = 2047;
-}
-
-//telemtry
-if (telemetry ==1){
-	telemetry_bit = 1;
-} else {
-	telemetry_bit = 0;
-}
-
-// gas + telemetru
-gastelemetry = (throttle << 1) | telemetry_bit;
-
-//crc berekening
-uint16_t value = gastelemetry;
-//uitleg crc berekening zie obsidian
-uint16_t crc = (value ^ (value >> 4) ^ (value >> 8)) & 0x0F;
-
-//alles samen
-dshotpakket = (gastelemetry << 4 ) | crc;
-
-//buffer vullen
-for (int i = 0; i < 16; i++)
-{
-	//0x8000 = 1000 0000 0000 0000 dus 16 bit waarbij ik de masker altijd naar juiste schuif
-	uint16_t masker = (0x8000 >> i);
-	if ((final_packet & mask) != 0)
+	uint16_t telemetry_bit;
+	uint16_t gastelemetry;
+	uint16_t dshotpakket;
+	//0-48 geeen gas
+	if (throttle > 0 && throttle < 48)
 	{
-		motor_dmabuf[motor_id][i] = DS_1;
-	} else {
-		motor_dmabuf[motor_id][i] = DS_0;
+		throttle = 48;
+	}
+	//2047 is volle gas
+	if (throttle > 2047)
+	{
+		throttle = 2047;
 	}
 
-}
+	//telemtry
+	if (telemetry ==1){
+		telemetry_bit = 1;
+	} else {
+		telemetry_bit = 0;
+	}
+
+	// gas + telemetru
+	gastelemetry = (throttle << 1) | telemetry_bit;
+
+	//crc berekening
+	uint16_t value = gastelemetry;
+	//uitleg crc berekening zie obsidian
+	uint16_t crc = (value ^ (value >> 4) ^ (value >> 8)) & 0x0F;
+
+	//alles samen
+	dshotpakket = (gastelemetry << 4 ) | crc;
+
+	//buffer vullen
+	for (int i = 0; i < 16; i++)
+	{
+		//0x8000 = 1000 0000 0000 0000 dus 16 bit waarbij ik de masker altijd naar juiste schuif
+		uint16_t masker = (0x8000 >> i);
+		if ((final_packet & mask) != 0)
+		{
+			motor_dmabuf[motor_id][i] = DS_1;
+		} else {
+			motor_dmabuf[motor_id][i] = DS_0;
+		}
+
+	}
 
 
 

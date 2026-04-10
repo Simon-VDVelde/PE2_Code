@@ -7,6 +7,11 @@ extern SPI_HandleTypeDef hspi2;
 ELRS_State_t elrs_state = ELRS_STATE_DISCONNECTED;
 uint8_t current_hop_index = 0;
 uint8_t payload_buffer[8];
+uint32_t last_packet_time = 0;
+uint16_t rc_roll = 992;     // 992 is het wiskundige midden in 11-bit(waarde van 0-2047)
+uint16_t rc_pitch = 992;
+uint16_t rc_yaw = 992;
+uint16_t rc_throttle = 172; // 172 is vaak de absolute minimumwaarde
 
 static void SX1280_SetRfFrequency(uint32_t frequency);
 
@@ -16,7 +21,7 @@ static void SX1280_SetRfFrequency(uint32_t frequency);
  */
 void SX1280_Init(void) {
     // 1. Harde Reset (functie had je al)
-    SX1280_Reset();
+	SX1280_nRST();
 
     // 2. Chip in Standby Mode zetten (RC klok) - VERPLICHT voor we settings aanpassen
     uint8_t standby_cmd[2] = {SX1280_SET_STANDBY, 0x00};
@@ -43,7 +48,7 @@ void SX1280_Init(void) {
     SX1280_SetDioIrqParams(0x4002, 0x0002, 0x0000, 0x0000);
 }
 
-void SX1280_Bussy(void)
+void SX1280_BUSY(void)
 {
     while(HAL_GPIO_ReadPin(SX1280_Bussy_GPIO_Port, SX1280_Bussy_Pin) == 1);
 }
@@ -65,7 +70,7 @@ void SX1280_nRST(void)
     HAL_GPIO_WritePin(SX1280_nRST_GPIO_Port, SX1280_nRST_Pin, 0);
     HAL_Delay(20);
     HAL_GPIO_WritePin(SX1280_nRST_GPIO_Port, SX1280_nRST_Pin, 1);
-    SX1280_Bussy();
+    SX1280_BUSY();
 }
 
 
@@ -77,7 +82,7 @@ void SX1280_WriteRegister(uint16_t address, uint8_t value)
     buf[2] = (uint8_t)(address & 0xFF);		// LSB
     buf[3] = value;                    			//data
 
-    SX1280_Bussy();
+    SX1280_BUSY();
     SX1280_Select();
     HAL_SPI_Transmit(&hspi2, buf, 4, HAL_MAX_DELAY);  ///versture buffer
     SX1280_Deselect();
@@ -95,7 +100,7 @@ uint8_t SX1280_ReadRegister(uint16_t address)  //instellen sx1280
     addr_buf[1] = (uint8_t)(address >> 8);
     addr_buf[2] = (uint8_t)(address & 0xFF);
 
-    SX1280_Bussy();
+    SX1280_BUSY();
     SX1280_Select();
     HAL_SPI_Transmit(&hspi2, addr_buf, 3, HAL_MAX_DELAY);
 
@@ -110,7 +115,7 @@ void SX1280_ReadBuffer(uint8_t offset, uint8_t *data, uint8_t size)
 {
 	uint8_t NOP = 0x00;
 	uint8_t READBUFFER = SX1280_READBUFFER;
-	SX1280_Bussy();
+	SX1280_BUSY();
     SX1280_Select();
 
     HAL_SPI_Transmit(&hspi2, &READBUFFER, 1, HAL_MAX_DELAY);//1byte sturen
@@ -134,7 +139,7 @@ static void SX1280_SetRfFrequency(uint32_t frequency)
     buf[2] = (uint8_t)( rfwaarde >> 8);  	// Middelste byte
     buf[3] = (uint8_t)( rfwaarde & 0xFF);   // LSB
 
-    SX1280_Bussy();
+    SX1280_BUSY();
     SX1280_Select();
 
     HAL_SPI_Transmit(&hspi2, buf, 4, HAL_MAX_DELAY);
@@ -213,7 +218,38 @@ void SX1280_SetDioIrqParams(uint16_t irqMask, uint16_t dio1Mask, uint16_t dio2Ma
     SX1280_Deselect();
 }
 
+/*
+ * @brief Deze functie wordt razendsnel aangeroepen door de STM32 hardware interrupt
+ * zodra de SX1280 een pakketje foutloos heeft ontvangen.
+ */
+void ELRS_HandleRxInterrupt(void)
+{
+    // 1. Wis de interrupt vlaggen op de SX1280
+    // Als je dit niet doet, blijft de SX1280 denken dat hij vol zit en crasht de loop.
+    // 0x03FF = Clear All IRQs (IRQ register is 2 bytes op de sx1280)
+    uint8_t clear_irq_buf[3] = {SX1280_CLRIRQSTATUS, 0x03, 0xFF};
 
+    SX1280_Bussy();
+    SX1280_Select();
+    HAL_SPI_Transmit(&hspi2, clear_irq_buf, 3, HAL_MAX_DELAY);
+    SX1280_Deselect();
+
+    // 2. Haal het pakketje (8 bytes) op uit de SX1280 buffer
+    // Bij LoRa Mode staat het binnengekomen pakketje altijd netjes klaar vanaf offset 0x00
+    SX1280_ReadBuffer(0x00, payload_buffer, 8);
+    ELRS_ParsePayload();
+
+    // 3. Update de connectie status
+    elrs_state = ELRS_STATE_CONNECTED;
+    last_packet_time = HAL_GetTick(); // Sla de huidige processortijd op (belangrijk voor failsafe!)
+
+    // [HIER KOMT LATER DE CODE OM DE DATA OM TE ZETTEN NAAR JOYSTICK BEREKENINGEN]
+
+    // 4. Zet de SX1280 direct weer op luisteren voor het volgende pakketje
+    // In een echt ELRS protocol hoppen we hier eerst naar de volgende frequentie,
+    // maar voor nu zetten we hem gewoon weer 'Aan'.
+    SX1280_SetRx();
+}
 
 void SX1280_SetRx(void)
 {
@@ -223,8 +259,25 @@ void SX1280_SetRx(void)
     buf[2] = 0xFF;
     buf[3] = 0xFF; // continu blijven sampelen
 
-    SX1280_Bussy();
+    SX1280_BUSY();
     SX1280_Select();
     HAL_SPI_Transmit(&hspi2, buf, 4, HAL_MAX_DELAY);
     SX1280_Deselect();
+}
+
+/*
+ * @brief Zet de 8-byte payload om in 11-bit joystick kanalen
+ */
+void ELRS_ParsePayload(void) {
+    // We slaan byte 0 over, dat is de 'Header' van het pakketje.
+    // De data zit in payload_buffer[1] t/m [6]
+
+    rc_roll     = (payload_buffer[1]       | payload_buffer[2] << 8) & 0x07FF;
+    rc_pitch    = (payload_buffer[2] >> 3  | payload_buffer[3] << 5) & 0x07FF;
+    rc_throttle = (payload_buffer[3] >> 6  | payload_buffer[4] << 2 | payload_buffer[5] << 10) & 0x07FF;
+    rc_yaw      = (payload_buffer[5] >> 1  | payload_buffer[6] << 7) & 0x07FF;
+
+    // --- Optioneel: Voorbereiding voor de PID-loop ---
+    // rc_throttle is nu een getal tussen ~172 en ~1811.
+    // Straks moeten we deze mappen naar DSHOT (48 tot 2047).
 }

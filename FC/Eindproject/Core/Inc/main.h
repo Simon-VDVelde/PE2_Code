@@ -120,6 +120,9 @@ void Error_Handler(void);
 #define Dshot_M4_GPIO_Port GPIOD
 #define Dshot_M3_Pin GPIO_PIN_13
 #define Dshot_M3_GPIO_Port GPIOD
+#define SX1280_INT_Pin GPIO_PIN_15
+#define SX1280_INT_GPIO_Port GPIOD
+#define SX1280_INT_EXTI_IRQn EXTI15_10_IRQn
 #define SD_D0_Pin GPIO_PIN_8
 #define SD_D0_GPIO_Port GPIOC
 #define SD_D1_Pin GPIO_PIN_9

@@ -8,7 +8,10 @@
 #ifndef INC_BMI330_H_
 #define INC_BMI330_H_
 
+#include "main.h"
 #include "stm32f7xx_hal.h"
+#include <stdio.h>
+#include <math.h>
 
 #define BMI330_ID					0x48
 
@@ -136,10 +139,18 @@
 #define BMI330_SYNC_TIME			0x3E
 
 typedef struct {
-    int16_t acc_x, acc_y, acc_z;
-    int16_t gyr_x, gyr_y, gyr_z;
-    uint16_t sensor_temp; // 24-bit
-    uint8_t offset;
+    float acc_x, acc_y, acc_z;
+    float gyr_x, gyr_y, gyr_z;
+    float sensor_temp;
+    float offset;
 } BMI330_Frame;
+
+void BMI330_Init(void);
+void BMI330_WriteReg(uint8_t reg, uint16_t val);
+void BMI330_ReadReg(uint8_t reg, uint16_t *pData, uint8_t len);
+float BMI330_GetTemp(void);
+void BMI330_Update(BMI330_Frame *frame, float *roll, float *pitch);
+
+
 
 #endif

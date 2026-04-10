@@ -23,6 +23,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "BMI330.h"
+#include "Dshot.h"
+#include "RC_Math.h"
+#include "sx1280.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -61,11 +64,19 @@ UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart8;
 
 /* USER CODE BEGIN PV */
-/*
-PID_Handle_t struct_PidRateRoll;
-PID_Handle_t struct_PidRatePitch;
-PID_Handle_t struct_PidRateYaw;
-*/
+PID_Controller pid_roll;
+PID_Controller pid_pitch;
+PID_Controller pid_yaw;
+
+BMI330_Frame current_data;
+float bmi_roll = 0.0f;
+float bmi_pitch = 0.0f;
+
+// Loop Timing variabelen
+uint32_t previous_micros = 0;
+// De 'volatile' tag is cruciaal! Dit vertelt de processor dat deze variabele
+// plotseling kan veranderen buiten de hoofdlus om (namelijk door een interrupt).
+volatile uint8_t gyro_data_ready = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -115,7 +126,6 @@ int main(void)
   //Init_RateLoops();
   //BMM350_Init();
   //BMP384_Init();
-  BMI330_Init();
   //PID_HandleInit(struct_PidRateRoll);
   //PID_HandleInit(struct_PidRatePitch);
   //PID_HandleInit(struct_PidRateYaw);
@@ -143,14 +153,75 @@ int main(void)
   MX_FATFS_Init();
   MX_UART8_Init();
   /* USER CODE BEGIN 2 */
+  BMI330_Init();
+  SX1280_Init();
+  SX1280_SetRx();
 
+  // zet meteen al de motors stil
+  update_motor_buffer(0, 48, 0);
+  update_motor_buffer(1, 48, 0);
+  update_motor_buffer(2, 48, 0);
+  update_motor_buffer(3, 48, 0);
+  send_dshot();
+  HAL_Delay(2000);
+
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  DWT->CYCCNT = 0;
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+  previous_micros = DWT->CYCCNT / 200;
+
+  // Init_PID(pointer, P, I, D, I_Limit, Output_Limit)
+  // Een Output limit van 400.0 zorgt dat een as maximaal ~20% van de motorcapaciteit kan stelen
+  PID_Init(&pid_roll,  1.2f, 0.05f, 15.0f, 200.0f, 400.0f);
+  PID_Init(&pid_pitch, 1.2f, 0.05f, 15.0f, 200.0f, 400.0f);
+  PID_Init(&pid_yaw,   2.0f, 0.1f,   0.0f, 200.0f, 400.0f);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (gyro_data_ready == 1)
+	  {
+		  // Zet direct het vlaggetje weer naar beneden
+		  gyro_data_ready = 0;
 
+		  // --- TIMING BEREKENEN ---
+		  uint32_t current_micros = DWT->CYCCNT / 200;
+		  // Bereken de exacte delta-tijd in seconden (bijv. 0.001005s)
+		  float dt = (float)(current_micros - previous_micros) / 1000000.0f;
+		  previous_micros = current_micros;
+
+		  // --- STAP 1: SENSOR UPDATE ---
+		  // Haal onmiddellijk de data op
+		  BMI330_Update(&current_data, &bmi_roll, &bmi_pitch);
+
+		  // --- STAP 2: DOELEN BEREKENEN ---
+		  Calculate_Target_Rates();
+
+		  // --- STAP 3: PID LOOP ---
+		  // We sturen nu de exact gemeten 'dt' mee in plaats van de vaste gok
+		  Calculate_PID(&pid_roll,  target_rate_roll,  current_data.gyr_x, dt);
+		  Calculate_PID(&pid_pitch, target_rate_pitch, current_data.gyr_y, dt);
+		  Calculate_PID(&pid_yaw,   target_rate_yaw,   current_data.gyr_z, dt);
+
+		  // --- STAP 4: MOTOR MIXER ---
+		  if (target_throttle <= 48) {
+			  update_motor_buffer(0, 48, 0); update_motor_buffer(1, 48, 0);
+			  update_motor_buffer(2, 48, 0); update_motor_buffer(3, 48, 0);
+		  } else {
+			  int16_t m1 = target_throttle - pid_roll.output + pid_pitch.output - pid_yaw.output;
+			  int16_t m2 = target_throttle - pid_roll.output - pid_pitch.output + pid_yaw.output;
+			  int16_t m3 = target_throttle + pid_roll.output + pid_pitch.output + pid_yaw.output;
+			  int16_t m4 = target_throttle + pid_roll.output - pid_pitch.output - pid_yaw.output;
+
+			  update_motor_buffer(0, m1, 0); update_motor_buffer(1, m2, 0);
+			  update_motor_buffer(2, m3, 0); update_motor_buffer(3, m4, 0);
+		  }
+
+		  // --- STAP 5: VERSTUUR DSHOT ---
+		  send_dshot();
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -171,7 +242,7 @@ void SystemClock_Config(void)
   /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -181,9 +252,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 50;
+  RCC_OscInitStruct.PLL.PLLN = 200;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
+  RCC_OscInitStruct.PLL.PLLQ = 8;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -202,10 +273,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6) != HAL_OK)
   {
     Error_Handler();
   }
@@ -350,7 +421,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -419,6 +490,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 0 */
 
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_OC_InitTypeDef sConfigOC = {0};
 
@@ -428,9 +500,18 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 333;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
   {
     Error_Handler();
@@ -472,6 +553,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 0 */
 
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_OC_InitTypeDef sConfigOC = {0};
 
@@ -481,9 +563,18 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 0;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 65535;
+  htim4.Init.Period = 333;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
   {
     Error_Handler();
@@ -698,6 +789,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : SX1280_INT_Pin */
+  GPIO_InitStruct.Pin = SX1280_INT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(SX1280_INT_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : BMM_INT_Pin */
   GPIO_InitStruct.Pin = BMM_INT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -730,35 +827,20 @@ void Update_Motors(uint16_t throttle, int16_t roll, int16_t pitch, int16_t yaw) 
 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	/*
-	if (GPIO_Pin == SX1280_DIO1_Pin) {
+
+	if (GPIO_Pin == SX1280_INT_PIN) {
         ELRS_HandleRxInterrupt();
     }
-    if (GPIO_Pin == GPIO_PIN_4)
+
+    if (GPIO_Pin == BMI_INT1_Pin)
     {
-    	BMI330_Frame current_data;
-    	uint16_t data[15];
-    	int len = 15;
-    	BMI330_ReadFIFO(data, len);
-    	BMI330_ParseFIFOFrame(&data, &current_data);
-
-    	int16_t rate_x = current_data.gyr_x - gyro_offset_x;
-    	int16_t rate_y = current_data.gyr_y - gyro_offset_y;
-    	int16_t rate_z = current_data.gyr_z - gyro_offset_z;
-
-    	int16_t out_roll  = PID_Controller(&struct_PidRateRoll,  target_rate_x - rate_x);
-    	int16_t out_pitch = PID_Controller(&struct_PidRatePitch, target_rate_y - rate_y);
-    	int16_t out_yaw   = PID_Controller(&struct_PidRateYaw,   target_rate_z - rate_z);
-
-    	Update_Motors(base_throttle, out_roll, out_pitch, out_yaw);
-    	new_gyro_data_available = 1;
+    	gyro_data_ready = 1;
     }
 
     if (GPIO_Pin == GPIO_PIN_5)
     {
 
     }
-    */
 }
 
 /* USER CODE END 4 */
