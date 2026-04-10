@@ -83,7 +83,7 @@ for (int i = 0; i < 16; i++)
 	{
 		motor_dmabuf[motor_id][i] = DS_1;
 	} else {
-		motor_dmabuf[motor_idx][i] = DS_0;
+		motor_dmabuf[motor_id][i] = DS_0;
 	}
 
 }

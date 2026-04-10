@@ -4,6 +4,7 @@
  *  Created on: 1 apr 2026
  *      Author: tijme
  */
+#include "main.h"
 
 #ifndef INC_SX1280_H_
 #define INC_SX1280_H_
