@@ -1,5 +1,5 @@
-C:/Users/simon/.st_workbench/projects/test6step/Src/sync_registers.c:32:9:RI_SetRegisterGlobal	12	static
-C:/Users/simon/.st_workbench/projects/test6step/Src/sync_registers.c:166:9:RI_SetRegisterMotor1	80	static
-C:/Users/simon/.st_workbench/projects/test6step/Src/sync_registers.c:456:9:RI_GetRegisterGlobal	16	static
-C:/Users/simon/.st_workbench/projects/test6step/Src/sync_registers.c:601:11:RI_GetRegisterMotor1	80	static
-C:/Users/simon/.st_workbench/projects/test6step/Src/sync_registers.c:997:9:RI_MovString	12	static
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Src/sync_registers.c:32:9:RI_SetRegisterGlobal	12	static
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Src/sync_registers.c:166:9:RI_SetRegisterMotor1	72	static
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Src/sync_registers.c:456:9:RI_GetRegisterGlobal	16	static
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Src/sync_registers.c:601:11:RI_GetRegisterMotor1	80	static
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Src/sync_registers.c:997:9:RI_MovString	12	static

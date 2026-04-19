@@ -1,5 +1,5 @@
 Application/User/regular_conversion_manager.o: \
- C:/Users/simon/.st_workbench/projects/test6step/Src/regular_conversion_manager.c \
+ C:/Users/tijme/OneDrive\ -\ Thomas\ More/Documenten/GitHub/PE2_Code/FC/test6step/Src/regular_conversion_manager.c \
  ../../Inc/regular_conversion_manager.h ../../Inc/mc_type.h \
  ../../Inc/mc_stm_types.h \
  ../../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h \

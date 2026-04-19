@@ -145,9 +145,27 @@ int main(void)
 	if (dshot_data.geldig){
 		Motor_stap(huidige_stap, dshot_data.gas);
 	}
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	dshot_data = DShot_Decode(dshot_dma_buffer);
+
+	    if (dshot_data.geldig) {
+	        if (BEMF_nulpunt(huidige_stap, adc_buffer)) {
+
+	            // om te testen even een delay toegevoegd hiernaa eventueel timer gebruiken
+	            HAL_Delay(0);
+
+	            // 4. Ga naar de volgende stap
+	            huidige_stap++;
+	            if (huidige_stap > 6) huidige_stap = 1;
+
+	            Motor_stap(huidige_stap, dshot_data.gas);
+	        }
+	    }
+	}
   }
   /* USER CODE END 3 */
 }

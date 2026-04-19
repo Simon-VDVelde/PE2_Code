@@ -1,5 +1,5 @@
 Middlewares/MotorControl/ntc_temperature_sensor.o: \
- C:/Users/simon/.st_workbench/projects/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/ntc_temperature_sensor.c \
+ C:/Users/tijme/OneDrive\ -\ Thomas\ More/Documenten/GitHub/PE2_Code/FC/test6step/MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Src/ntc_temperature_sensor.c \
  ../../MCSDK_v6.4.1-Full/MotorControl/MCSDK/MCLib/Any/Inc/ntc_temperature_sensor.h \
  ../../Inc/mc_type.h ../../Inc/mc_stm_types.h \
  ../../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h \

@@ -1,5 +1,5 @@
-C:/Users/simon/.st_workbench/projects/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:112:19:HAL_RCCEx_PeriphCLKConfig	22
-C:/Users/simon/.st_workbench/projects/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:469:6:HAL_RCCEx_GetPeriphCLKConfig	1
-C:/Users/simon/.st_workbench/projects/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:610:10:HAL_RCCEx_GetPeriphCLKFreq	54
-C:/Users/simon/.st_workbench/projects/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:1216:6:HAL_RCCEx_EnableLSCO	4
-C:/Users/simon/.st_workbench/projects/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:1263:6:HAL_RCCEx_DisableLSCO	4
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:112:19:HAL_RCCEx_PeriphCLKConfig	22
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:469:6:HAL_RCCEx_GetPeriphCLKConfig	1
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:610:10:HAL_RCCEx_GetPeriphCLKFreq	54
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:1216:6:HAL_RCCEx_EnableLSCO	4
+C:/Users/tijme/OneDrive - Thomas More/Documenten/GitHub/PE2_Code/FC/test6step/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c:1263:6:HAL_RCCEx_DisableLSCO	4
